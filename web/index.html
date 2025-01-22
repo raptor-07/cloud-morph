@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title id="app-title">Cloud Morph Demo</title>
+  <link href="/static/css/main.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="app-body">
+    <div id="discovery">
+      <label id="Discovery All games">Applications in Cloud Morph Network</label>
+      <select class="drop" id="discoverydropdown" size=40>
+    </select>
+    </div>
+    <div id="app">
+        <iframe id="app-container" src="/static/embed/embed.html" frameBorder="0" overflow="hidden"></iframe>
+    </div>
+    <div id="chat">
+      {{if .HasChat}}
+      <script id="cid0020000291329386573" data-cfasync="false" async src="//st.chatango.com/js/gz/emb.js" style="width: 100%;height: 100%;">{"handle":"cloudmorph","arch":"js","styles":{"b":100,"c":"000000","d":"000000","l":"FFFFFF","m":"FFFFFF","p":"10","r":100,"ab":false,"usricon":0,"surl":0,"cnrs":"0.16","fwtickm":1}}</script>
+      {{end}}
+    </div>
+  </div>
+  <div id="app-meta">
+    <label id="intro">Cloud Morph Demo</label></br>
+    <label id="numplayers">Number of players:</label></br>
+    <button id="fullscreen" type="submit">Fullscreen</button></br>
+    <label>Powered by Cloud Morph: <a
+        href="https://github.com/giongto35/cloud-morph">github.com/giongto35/cloud-morph</a>.</label>
+    <label>Built by <a href=https://www.linkedin.com/in/huuthanhnguyen />giongto35</a></label>
+  </div>
+
+  <script src="/static/js/log.js"></script>
+  <script src="/static/js/env.js"></script>
+  <script src="/static/js/event/event.js"></script>
+  <script src="/static/js/network/ajax.js"></script>
+  <script src="/static/js/network/socket.js"></script>
+  <!--<script src="/static/js/network/rtcp.js"></script>-->
+  <script src="/static/js/controller.js"></script>
+  <script src="/static/js/initcloudmorph.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZZ8L95MM0V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-ZZ8L95MM0V');
+  </script>
+</body>
+
+</html>

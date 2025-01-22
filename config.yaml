@@ -1,0 +1,32 @@
+#Simpler run with Notepad
+path: apps/winmine # Directory to the app (relative path)
+appFile: Minesweeper.exe # File Name of the app in the directory
+windowTitle: mine # Window Title: not to show, it's the substring of title to help specify the running program in OS
+pageTitle: "mine" # Page Title: To display on webpage
+appName: mine # App name: to show in discovery
+appMode: collaborative # app mode: collaborative/single (ex. collaborative: multiple user using same game session)
+hasChat: false # Toggle chat
+virtualize: false # For Windows, Run in VM (Sandbox) if true. Linux is already fully virtualized with Docker+Wine.
+videoCodec: h264 # h264 / vpx (vp8)
+# Manual external IP, see https://pkg.go.dev/github.com/pion/webrtc/v2#SettingEngine.SetNAT1To1IPs
+# format: IP/candidate type
+#nat1to1ip: 127.0.0.1/host
+# disables WebRTC interceptors
+#disableInterceptors: true
+#stunturn: none
+
+#Need to specify path
+# path: /apps/nfhdemo/bin # Directory to the app. NOTE: It's the path in winvm
+# appFile: Game.exe # File Name of the app in the directory
+# windowTitle: Neighbours # Window Title: not to show, it's the substring of title to help specify the running program in OS
+# pageTitle: "Neighbours from Hell Game Demo" # Page Title: To display on webpage
+# appName: "Neighbours-from-Hell" # App name: to show in discovery
+# appMode: collaborative # app mode: collaborative/single (ex. collaborative: multiple user using same game session)
+# isWindowMode: false # Optional: Default to be true. Full screen Windowed or Fullscreen. Up to app
+# hasChat: true # Turn on chat
+# hardwareKey: false # Some game using DirectX needs hardward key. Turn this flag on to receive the input
+# # screenWidth: 480 # Optional: Default to be: 800
+# # screenHeight: 320 # Optional: Default to be: 600
+# # isWindowMode: false # Optional: Default to be true. Full screen Windowed or Fullscreen. Up to app
+# # discoveryHost: http://discovery.cloudmorph.io # Optional: to be discoverable if you plug-in to the discovery server
+# # instanceAddr: clouddiablo.com # Address of a cloud service instance, discovery can find
