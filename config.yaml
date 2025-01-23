@@ -1,6 +1,6 @@
 #Simpler run with Notepad
-path: apps/winmine # Directory to the app (relative path)
-appFile: Minesweeper.exe # File Name of the app in the directory
+path: apps/cloudBuild # Directory to the app (relative path)
+appFile: Cloud\ Test\ Game.exe # File Name of the app in the directory
 windowTitle: mine # Window Title: not to show, it's the substring of title to help specify the running program in OS
 pageTitle: "mine" # Page Title: To display on webpage
 appName: mine # App name: to show in discovery

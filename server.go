@@ -12,6 +12,10 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	// Missing imports for:
+	"sync"         // For sync.Mutex
+	"net"          // For net.ResolveTCPAddr
+	"github.com/google/uuid"  // For UUID generation
 
 	"github.com/giongto35/cloud-morph/pkg/addon/textchat"
 	"github.com/giongto35/cloud-morph/pkg/common/config"
@@ -33,7 +37,7 @@ const indexPage string = "web/index.html"
 const addr string = ":8080"
 
 var chatEventTypes = []string{"CHAT"}
-var appEventTypes = []string{"OFFER", "ANSWER", "MOUSEDOWN", "MOUSEUP", "MOUSEMOVE", "KEYDOWN", "KEYUP"}
+var appEventTypes = []string{"OFFER", "ANSWER", "MOU	DOWN", "MOUSEUP", "MOUSEMOVE", "KEYDOWN", "KEYUP"}
 var dscvEventTypes = []string{"SELECTHOST"}
 
 // TODO: multiplex clientID
@@ -44,14 +48,27 @@ var clientID string
 // 	ws       *cws.Client
 // }
 
+
+
+type SessionData struct {
+	SessionID    string
+	WSClient     *cws.Client
+	GameInstance *cloudapp.Server
+	Port         int
+	LastActive   time.Time
+}
+
 type Server struct {
 	appID            string
 	httpServer       *http.Server
 	wsClients        map[string]*cws.Client
+	sessions         map[string]*SessionData
+	sessionsMutex    sync.Mutex
 	chat             *textchat.TextChat
 	discoveryHandler *discoveryHandler
 	appMeta          appDiscoveryMeta
 	cappServer       *cloudapp.Server
+	portPool         chan int
 }
 
 type discoveryHandler struct {
@@ -79,49 +96,150 @@ type initData struct {
 	Apps []appDiscoveryMeta `json:"apps"`
 }
 
-// WSO handles all connections from user/frontend to coordinator
-func (s *Server) WS(w http.ResponseWriter, r *http.Request) {
-	log.Println("A user is connecting...")
-	// defer func() {
-	// 	if r := recover(); r != nil {
-	// 		log.Println("Warn: Something wrong. Recovered in ", r)
-	// 	}
-	// }()
+func generateSessionID() string {
+	return uuid.New().String()
+}
 
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		// TODO: can we be stricter?
-		return true
+func (s *Server) getAvailablePort() int {
+	select {
+	case port := <-s.portPool:
+		return port
+	default:
+		addr, err := net.ResolveTCPAddr("tcp", "localhost:0")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		l, err := net.ListenTCP("tcp", addr)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer l.Close()
+		return l.Addr().(*net.TCPAddr).Port
 	}
-	// be aware of ReadBufferSize, WriteBufferSize (default 4096)
-	// https://pkg.go.dev/github.com/gorilla/websocket?tab=doc#Upgrader
-	c, err := upgrader.Upgrade(w, r, nil)
+}
+
+func (s *Server) spawnGameInstance(port int) *cloudapp.Server {
+	cfg := config.Config{
+		
+		AppName:        s.appMeta.AppName,
+		AppMode:        s.appMeta.AppMode,
+		HasChat:        s.appMeta.HasChat,
+		PageTitle:      s.appMeta.PageTitle,
+		ScreenWidth:    s.appMeta.ScreenWidth,
+		ScreenHeight:   s.appMeta.ScreenHeight,
+		InstanceAddr:   fmt.Sprintf(":%d", port),
+		DiscoveryHost:  s.discoveryHandler.discoveryHost,
+	}
+
+	gameMux := http.NewServeMux()
+	gameRouter := mux.NewRouter()
+	gameServer := cloudapp.NewServerWithHTTPServerMux(cfg, gameRouter, gameMux)
+	go gameServer.ListenAndServe()
+	return gameServer
+}
+
+func (s *Server) embedHandler(w http.ResponseWriter, r *http.Request) {
+	sessionID := generateSessionID()
+	port := s.getAvailablePort()
+
+	gameInstance := s.spawnGameInstance(port)
+
+	s.sessionsMutex.Lock()
+	s.sessions[sessionID] = &SessionData{
+		SessionID:    sessionID,
+		GameInstance: gameInstance,
+		Port:         port,
+		LastActive:   time.Now(),
+	}
+	s.sessionsMutex.Unlock()
+
+	http.SetCookie(w, &http.Cookie{
+		Name:  "session_id",
+		Value: sessionID,
+		Path:  "/",
+		Secure: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+
+	tmpl, err := template.ParseFiles(embedPage)
 	if err != nil {
-		log.Println("Coordinator: [!] WS upgrade:", err)
+		http.Error(w, "Template error", http.StatusInternalServerError)
+		return
+	}
+	tmpl.Execute(w, struct{ Port int }{ Port: port })
+}
+
+func (s *Server) WS(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_id")
+	if err != nil {
+		http.Error(w, "Session required", http.StatusBadRequest)
 		return
 	}
 
-	// Create websocket Client
+	sessionID := cookie.Value
+	s.sessionsMutex.Lock()
+	session, exists := s.sessions[sessionID]
+	s.sessionsMutex.Unlock()
+
+	if !exists {
+		http.Error(w, "Invalid session", http.StatusUnauthorized)
+		return
+	}
+
+	upgrader.CheckOrigin = func(r *http.Request) bool { return true }
+	c, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println("WS upgrade error:", err)
+		return
+	}
+
 	wsClient := cws.NewClient(c)
-	// clientID := wsClient.GetID()
+	session.WSClient = wsClient
+
+	s.sessionsMutex.Lock()
 	s.wsClients[wsClient.GetID()] = wsClient
-	// Add websocket client to chat service
-	// DEPRECATED because we use external chat
-	// chatClient := s.chat.AddClient(clientID, wsClient)
-	// chatClient.Route()
-	log.Println("Initialized Chat")
-	// TODO: Update packet
-	// Add websocket client to app service
-	log.Println("Initialized ServiceClient")
+	s.sessions[sessionID].LastActive = time.Now()
+	s.sessionsMutex.Unlock()
+
+	go func() {
+		defer s.cleanupSession(sessionID)
+		wsClient.Listen()
+	}()
 
 	s.initClientData(wsClient)
-	go func(browserClient *cws.Client) {
-		browserClient.Listen()
-		log.Println("Closing connection")
-		// chatClient.Close()
-		browserClient.Close()
-		log.Println("Closed connection")
-	}(wsClient)
+	log.Printf("New connection for session %s on port %d", sessionID, session.Port)
 }
+
+func (s *Server) cleanupSession(sessionID string) {
+	s.sessionsMutex.Lock()
+	defer s.sessionsMutex.Unlock()
+
+	if session, exists := s.sessions[sessionID]; exists {
+		if session.GameInstance != nil {
+			session.GameInstance.Shutdown()
+		}
+		delete(s.sessions, sessionID)
+		s.portPool <- session.Port
+		log.Printf("Cleaned up session %s on port %d", sessionID, session.Port)
+	}
+}
+
+func (s *Server) sessionJanitor() {
+	for range time.Tick(1 * time.Minute) {
+		s.sessionsMutex.Lock()
+		now := time.Now()
+		for id, session := range s.sessions {
+			if now.Sub(session.LastActive) > 15*time.Minute {
+				s.cleanupSession(id)
+				log.Printf("Cleaned up inactive session %s", id)
+			}
+		}
+		s.sessionsMutex.Unlock()
+	}
+}
+
+
 
 func (s *Server) initClientData(client *cws.Client) {
 	s.chat.SendChatHistory(client.GetID())
@@ -181,12 +299,20 @@ func NewServer() *Server {
 	log.Printf("Config: %+v", cfg)
 
 	server := &Server{
-		wsClients:        map[string]*cws.Client{},
+		wsClients:        make(map[string]*cws.Client),
+		sessions:         make(map[string]*SessionData),
 		discoveryHandler: NewDiscovery(cfg.DiscoveryHost),
+		portPool:         make(chan int, 100),
+	}
+
+	// Initialize port pool
+	for i := 0; i < 100; i++ {
+		server.portPool <- 5000 + i
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/wscloudmorph", server.WS)
+	//r.HandleFunc("/wscloudmorph", server.WS)
+	r.HandleFunc("/embed", server.embedHandler)
 	r.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 	})
@@ -259,6 +385,8 @@ func NewServer() *Server {
 	if cfg.DiscoveryHost != "" {
 		go server.ListenAppListUpdate()
 	}
+
+	go server.sessionJanitor()
 	return server
 }
 
@@ -308,8 +436,6 @@ func monitor() {
 }
 
 func main() {
-	// HTTP server
-	// TODO: Make the communication over websocket
 	http.Handle("/assets/", http.StripPrefix("/assets", http.FileServer(http.Dir("./assets"))))
 	monitor()
 	server := NewServer()
@@ -324,11 +450,9 @@ func main() {
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)
-	select {
-	case <-stop:
-		log.Println("Received SIGTERM, Quiting")
-		server.Shutdown()
-	}
+	<-stop
+	log.Println("Received SIGTERM, Shutting down")
+	server.Shutdown()
 }
 
 // Encode encodes the input in base64
