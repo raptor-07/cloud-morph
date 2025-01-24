@@ -1,0 +1,43 @@
+REGEDIT4 
+;downloaded from http://roadrash95.wordpress.com
+
+;fixes the key for win7
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Electronic Arts\RoadRash 95]
+@=""
+"Path"="."
+"CheckDialup"=hex:00
+"ChatState"=hex:02
+"MiniDash"=hex:00
+"OpponentList"=hex:01
+
+;original key
+[HKEY_LOCAL_MACHINE\SOFTWARE\Electronic Arts\RoadRash 95]
+@=""
+"Path"="."
+"CheckDialup"=hex:00
+"ChatState"=hex:02
+"MiniDash"=hex:00
+"OpponentList"=hex:01
+
+;sets sound, disables midi music
+[HKEY_CURRENT_USER\Software\Classes\VirtualStore\MACHINE\SOFTWARE\Wow6432Node\Electronic Arts\RoadRash 95]
+"Mixer"=hex:00,00,00,00,00,00,00,00,64,00,00,00,00,00,00,00,50,00,00,00,00,00,\
+  00,00,50,00,00,00,00,00,00,00,50,00,00,00,00,00,00,00,50,00,00,00,01,00,00,\
+  00,50,00,00,00,00,00,00,00,50,00,00,00,00,00,00,00
+
+[HKEY_CURRENT_USER\Software\Classes\VirtualStore\MACHINE\SOFTWARE\Electronic Arts\RoadRash 95]
+"Mixer"=hex:00,00,00,00,00,00,00,00,64,00,00,00,00,00,00,00,50,00,00,00,00,00,\
+  00,00,50,00,00,00,00,00,00,00,50,00,00,00,00,00,00,00,50,00,00,00,01,00,00,\
+  00,50,00,00,00,00,00,00,00,50,00,00,00,00,00,00,00
+
+;fixes colors on win7
+[HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\DirectDraw\Compatibility\RashRoot]
+"Name"="ROADRASH.EXE"
+"ID"=hex:e7,cb,1d,32
+"Flags"=hex:00,08,00,00
+
+;fixes colors on unpatched win7
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DirectDraw\Compatibility\RashRoot]
+"Name"="ROADRASH.EXE"
+"ID"=hex:e7,cb,1d,32
+"Flags"=hex:00,08,00,00

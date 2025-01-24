@@ -311,7 +311,7 @@ func NewServer() *Server {
 	}
 
 	r := mux.NewRouter()
-	//r.HandleFunc("/wscloudmorph", server.WS)
+	r.HandleFunc("/wscloudmorph", server.WS)
 	r.HandleFunc("/embed", server.embedHandler)
 	r.HandleFunc("/echo", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")

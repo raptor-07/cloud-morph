@@ -1,0 +1,95 @@
+Initialize engine version: 5.3.2p3 (b6c1a63227dc)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 470 (ID=0x6cd)
+    Vendor:   NVIDIA
+    VRAM:     3915 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.136 seconds
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: Z:\apps\SortTheCourt_Windows\SortTheCourt_Data\Managed\System.dll (this message is harmless)
+desktop: 800x600 0Hz; virtual: 800x600 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Touch support initialization failed: Call not implemented.
+.
+UnloadTime: 5.788100 ms
+InControl (version 1.6.8 build 8730)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+DontDestroyOnLoad only work for root GameObjects or components on root GameObjects.
+ 
+(Filename:  Line: 367)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 1c4 -> priority: 1 
+Unloading 5 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 15.131801 ms
+
+Unloading 32 unused Assets to reduce memory usage. Loaded Objects now: 4429.
+Total: 18.341200 ms (FindLiveObjects: 0.358600 ms CreateObjectMapping: 0.287200 ms MarkObjects: 17.313700 ms  DeleteObjects: 0.378700 ms)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Keyboard
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+
+ControlType changed to Mouse
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 37)
+

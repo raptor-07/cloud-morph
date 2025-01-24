@@ -1,0 +1,9 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Electronic Arts\RoadRash 95]
+@=""
+"Path"="G:\\DOWNLO~1\\UITZOE~1\\ROADRASH"
+"CheckDialup"=hex:00
+"ChatState"=hex:02
+"MiniDash"=hex:00
+"OpponentList"=hex:01

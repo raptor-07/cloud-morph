@@ -1,0 +1,4 @@
+Windows Registry Editor Version 5.00 
+
+ [HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers] 
+ "C:\\Games\\RoadRash\\Roadrash.exe"="~ DWM8And16BitMitigation Layer_ForceDirectDrawEmulation RUNASADMIN HIGHDPIAWARE" 
